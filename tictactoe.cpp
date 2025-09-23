@@ -1,42 +1,60 @@
 #include <iostream>
 #include <cstring>
+#include <limits>
 
 using namespace std;
 
-int checkValid(char move[2], int player, char &board[3][3]);
-bool checkWin(char board[3][3]);
+int checkValid(char move[2], int player, char board[4][4]);
+bool checkWin(char board[4][4]);
+void resetBoard(char cleanBoard[4][4], char board[4][4]);
+void printBoard(char board[4][4]);
 
-char cleanBoard[3][3] = { {'\0', 'a', 'b', 'c'}
-		          {'1', '\0', '\0', '\0'}
-		          {'2', '\0', '\0', '\0'}
-		          {'3'. '\0', '\0', '\0'} }
+char cleanBoard[4][4] = { {'\0', 'a', 'b', 'c'},
+		          {'1', '\0', '\0', '\0'},
+		          {'2', '\0', '\0', '\0'},
+		          {'3', '\0', '\0', '\0'} };
 
-char board[3][3] = { {'\0', 'a', 'b', 'c'}
-                     {'1', '\0', '\0', '\0'}
-                     {'2', '\0', '\0', '\0'}
-                     {'3'. '\0', '\0', '\0'} }
+char board[4][4] = { {'\0', 'a', 'b', 'c'},
+		     {'1', '\0', '\0', '\0'},
+		     {'2', '\0', '\0', '\0'},
+		     {'3', '\0', '\0', '\0'} };
   
   
 int main()
 {
-  playing = true;
-  player = 1;
+  bool playing = true;
+  int player = 1;
   
   while(playing)
     {
-      cout << "What is your move? (form of rowcolumn, lowercase please)" << endl;
+      cout << endl;
+      printBoard(board);
+      cout << "What is your move? (form of columnrow, lowercase please)" << endl;
 
       char placeToPlay[2];
-							       
-      cin.get(2, placeToPlay);
-      placeToPlay[2] = '\0';
-							       
-      //Invalid move
-      if(checkValid(placeToPlay, player, board) == -1)
-	{
-	  cout << "Invalid" << endl;
-	}
 
+      cin.get(placeToPlay, 3);
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+      
+      //Check move
+      int valid = checkValid(placeToPlay, player, board);
+
+      //Bad input
+      if(valid == -1)
+	{
+	  cout << "That's not a move" << endl;
+	  if(player == 1) { player = 2; }
+          else if(player == 2) { player = 1; }
+	}
+      else if(valid == -2)
+	{
+	  cout << "You can't play there" << endl;
+	  if(player == 1) { player = 2; }
+          else if(player == 2) { player = 1; }
+	}
+      
       //T/F win statement
       bool win = checkWin(board);
       if(win == true)
@@ -53,36 +71,46 @@ int main()
 	    }
 	  else
 	    {
-	      resetBoard();
+	      resetBoard(cleanBoard, board);
 	      player = 1;
 	    }
 	}
+
+      if(player == 1) { player = 2; }
+      else if(player == 2) { player = 1; }
+      
     }
   
   return 0;
 }
 
-int checkValid(char move[2], int player, char &board[3][3])
+int checkValid(char move[2], int player, char board[4][4])
 {
   //Change move to something useful
-  int betterFormattedMove[1];
+  int indexedMove[2];
 
-  if(move[1] == 'a') {betterFormattedMove[1] = 1;}
-  else if(move[1] == 'b') {betterFormattedMove[1] = 2;}
-  else if(move[1] == 'c') {betterFormattedMove[1] = 3;}
-  else {return -1;}
+  if(move[0] == 'a') { indexedMove[1] = 1; }
+  else if(move[0] == 'b') { indexedMove[1] = 2; }
+  else if(move[0] == 'c') { indexedMove[1] = 3; }
+  else { return -1; }
   
-  betterFormattedMove[0] = move[0];
+  if(move[1] == '1') { indexedMove[0] = 1; }
+  else if(move[1] == '2') { indexedMove[0] = 2; }
+  else if(move[1] == '3') { indexedMove[0] = 3; }
+  else { return -1; }
 
   //Put X or O
-  if(board[betterFormattedMove[0]][betterFormattedMove[1]] == '\0')
+  if(board[indexedMove[0]][indexedMove[1]] == '\0')
     {
-      if(player == 1) {board[betterFormattedMove[0]][betterFormattedMove[1]] = 'X';}
-      else if(player == 2) {board[betterFormattedMove[0]][betterFormattedMove[1]] = 'O';}
+      if(player == 1) {board[indexedMove[0]][indexedMove[1]] = 'X';}
+      else if(player == 2) {board[indexedMove[0]][indexedMove[1]] = 'O';}
     }
+  else { return -2; }
+
+  return 0;
 }
 
-bool checkWin(char board[3][3])
+bool checkWin(char board[4][4])
 {
   //Top left to bottom right
   if(board[1][1] == board[2][2] and board[1][1] == board[3][3] and board[1][1] != '\0') {return true;}
@@ -109,4 +137,29 @@ bool checkWin(char board[3][3])
   if(board[1][3] == board[2][3] and board[1][3] == board [3][3] and board[1][3] != '\0') {return true;}
 
   return false;
+}
+
+void resetBoard(char cleanBoard[4][4], char board[4][4])
+{
+  for(int i = 0; i < 4; i++)
+    {
+      for(int j = 0; j < 4; j++)
+	{
+	  board[i][j] = cleanBoard[i][j];
+	}
+    }
+}
+
+void printBoard(char board[4][4])
+{
+  cout << "Board" << endl;
+  for(int i = 0; i < 4; i++)
+    {
+      for(int j = 0; j < 4; j++)
+	{
+	  if(board[i][j] == '\0') { cout << '_'; }
+	  else { cout << board[i][j]; }
+	}
+      cout << endl;
+    }
 }
