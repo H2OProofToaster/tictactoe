@@ -59,9 +59,13 @@ int main()
           else if(player == 2) { player = 1; }
 	}
       
-      //T/F win statement
-      bool win = checkWin(board);
-      if(win == true)
+      //Deal with win/tie
+      int win = checkWin(board);
+      if(win == -1)
+	{
+	  cout << "Tie" << endl;
+	}
+      else if(win == 1)
 	{
 	  cout << "Player " << player << " wins" << endl;
 
@@ -72,7 +76,11 @@ int main()
 	  //Print wins
 	  cout << "Player 1 wins: " << player1Wins << endl;
 	  cout << "Player 2 wins: " << player2Wins << endl;
-	  
+	}
+
+      //Play again
+      if(win != 0)
+	{
 	  //Ask to play again
 	  bool playAgain = true;
 	  cout << "Play again? (0 or 1)" << endl;
@@ -127,33 +135,44 @@ int checkValid(char move[2], int player, char board[4][4])
   return 0;
 }
 
-bool checkWin(char board[4][4])
+int checkWin(char board[4][4])
 {
+  //Tie
+  bool tie = true
+  for(int i = 1; i < 4; i++)
+    {
+      for(int j = 1; j < 4; j++)
+	{
+	  if(board[i][j] == '_') { tie = false; }
+	}
+    }
+  if(tie == true) { return -1; }
+  
   //Top left to bottom right
-  if(board[1][1] == board[2][2] and board[1][1] == board[3][3] and board[1][1] != '\0') {return true;}
+  if(board[1][1] == board[2][2] and board[1][1] == board[3][3] and board[1][1] != '\0') {return 1;}
 
   //Top right to bottom left
-  if(board[1][3] == board[2][2] and board[1][3] == board[3][1] and board[1][3] != '\0') {return true;}
+  if(board[1][3] == board[2][2] and board[1][3] == board[3][1] and board[1][3] != '\0') {return 1;}
 
   //Top row
-  if(board[1][1] == board[1][2] and board[1][1] == board [1][3] and board[1][1] != '\0') {return true;}
+  if(board[1][1] == board[1][2] and board[1][1] == board [1][3] and board[1][1] != '\0') {return 1;}
 
   //Middle row
-  if(board[2][1] == board[2][2] and board[2][1] == board [2][3] and board[2][1] != '\0') {return true;}
+  if(board[2][1] == board[2][2] and board[2][1] == board [2][3] and board[2][1] != '\0') {return 1;}
 
   //Bottom row
-  if(board[3][1] == board[3][2] and board[3][1] == board [3][3] and board[3][1] != '\0') {return true;}
+  if(board[3][1] == board[3][2] and board[3][1] == board [3][3] and board[3][1] != '\0') {return 1;}
 
   //Left column
-  if(board[1][1] == board[2][1] and board[1][1] == board [3][1] and board[1][1] != '\0') {return true;}
+  if(board[1][1] == board[2][1] and board[1][1] == board [3][1] and board[1][1] != '\0') {return 1;}
 
   //Middle column
-  if(board[1][2] == board[2][2] and board[1][2] == board [3][2] and board[1][2] != '\0') {return true;}
+  if(board[1][2] == board[2][2] and board[1][2] == board [3][2] and board[1][2] != '\0') {return 1;}
 
   //Right column
-  if(board[1][3] == board[2][3] and board[1][3] == board [3][3] and board[1][3] != '\0') {return true;}
+  if(board[1][3] == board[2][3] and board[1][3] == board [3][3] and board[1][3] != '\0') {return 1;}
 
-  return false;
+  return 0;
 }
 
 void resetBoard(char cleanBoard[4][4], char board[4][4])
