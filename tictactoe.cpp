@@ -24,15 +24,19 @@ int main()
 {
   bool playing = true;
   int player = 1;
+  int player1Wins = 0;
+  int player2Wins = 0;
   
   while(playing)
     {
+      //Get player input
       cout << endl;
       printBoard(board);
       cout << "What is your move? (form of columnrow, lowercase please)" << endl;
 
       char placeToPlay[2];
 
+      //Clear buffer
       cin.get(placeToPlay, 3);
       cin.clear();
       cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -61,21 +65,34 @@ int main()
 	{
 	  cout << "Player " << player << " wins" << endl;
 
+	  //Increment win counter
+	  if(player == 1) { player1Wins++; }
+	  else if(player == 2) { player2Wins++; }
+
+	  //Print wins
+	  cout << "Player 1 wins: " << player1Wins << endl;
+	  cout << "Player 2 wins: " << player2Wins << endl;
+	  
+	  //Ask to play again
 	  bool playAgain = true;
 	  cout << "Play again? (0 or 1)" << endl;
 	  cin >> playAgain;
-	  
+
+	  //Stop playing
 	  if(!playAgain)
 	    {
 	      playing = false;
 	    }
+
+	  //Reset and play again
 	  else
 	    {
 	      resetBoard(cleanBoard, board);
-	      player = 1;
+	      player = 2;
 	    }
 	}
-
+      
+      //Switch players
       if(player == 1) { player = 2; }
       else if(player == 2) { player = 1; }
       
@@ -141,6 +158,7 @@ bool checkWin(char board[4][4])
 
 void resetBoard(char cleanBoard[4][4], char board[4][4])
 {
+  //Copies clean board to second one
   for(int i = 0; i < 4; i++)
     {
       for(int j = 0; j < 4; j++)
@@ -152,6 +170,7 @@ void resetBoard(char cleanBoard[4][4], char board[4][4])
 
 void printBoard(char board[4][4])
 {
+  //Makes printing the board actually useful
   cout << "Board" << endl;
   for(int i = 0; i < 4; i++)
     {
